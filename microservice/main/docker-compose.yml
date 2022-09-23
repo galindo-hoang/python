@@ -1,0 +1,32 @@
+version: '3.9'
+services:
+  db:
+    image: postgres
+    container_name: postgres_db_main
+    volumes:
+      - .dbdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DATABASE = postgres
+      - POSTGRES_DB = postgres
+      - POSTGRES_USER = postgres
+      - POSTGRES_PASSWORD = postgres
+    ports:
+      - "54323:5432"
+
+
+  backend:
+    container_name: backend_main
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: 'python app.py'
+    ports:
+      - "8001:5000"
+    volumes:
+      - .:/app
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    depends_on:
+      - db
